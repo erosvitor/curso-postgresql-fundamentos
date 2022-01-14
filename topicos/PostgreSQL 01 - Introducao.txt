@@ -1,0 +1,32 @@
+
+====================================================================================================
+CURSO POSTGRESQL FUNDAMENTOS - Introdução
+====================================================================================================
+
+
+Instrutor
+----------------------------------------------------------------------------------------------------
+- Eros Vitor Bornatowski
+- Curitibano, casado, dois filhos
+- Pós-graduando em banco de dados
+- Bacharel em sistemas de informação
+- Técnico em processamento de dados
+- +20 anos desenvolvendo softwares
+- +10 anos ministrando cursos técnicos
+
+
+Curso
+----------------------------------------------------------------------------------------------------
+- Fundamentos do PostgreSQL
+- Teoria + Prática
+- Exemplos + Exercícios
+
+
+MySQL
+----------------------------------------------------------------------------------------------------
+- Sistema de Gerenciamento de Banco de Dados
+- Modelo de dados relacional
+- Triggers, Stored Procedures, Cursores e Funções
+- Gratuito
+- pgAdmin
+

@@ -1,0 +1,55 @@
+
+====================================================================================================
+CURSO POSTGRESQL FUNDAMENTOS - Instalação
+====================================================================================================
+
+
+Instalando PostgreSQL 9.5 no Ubuntu 18.04
+----------------------------------------------------------------------------------------------------
+
+- Atualizar base APT
+
+  $ sudo apt update
+  $ sudo apt upgrade
+
+- Instalar PostgreSQL
+
+  $ sudo apt install postgresql-9.5
+
+- Obter a versão do PostgreSQL recem instalado
+
+  $ psql --version
+
+- Definir uma senha para o usuário padrão
+
+  $ sudo passwd postgres
+
+- Logar com o usuário padrão
+
+  $ su -l postgres
+
+- Acessar localmente servidor do PostgreSQL
+
+  $ psql
+
+- Visualizar bancos de dados existentes
+
+  postgres=# \list
+
+- Sair do servidor PostgreSQL
+
+  postgres=# \q
+
+- Parar o servidor PostgreSQL
+
+  $ sudo service postgresql stop
+
+- Iniciar o servidor PostgreSQL
+
+  $ sudo service postgresql start
+
+- Obter o status do servidor PostgreSQL
+
+  $ sudo service postgresql status
+
+
