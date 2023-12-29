@@ -1,0 +1,142 @@
+====================================================================================================
+CURSO POSTGRESQL FUNDAMENTOS - TRIGGERS
+====================================================================================================
+
+
+Banco de dados exemplo
+----------------------------------------------------------------------------------------------------
+Para este tópico será criado um banco de dados chamado 'logs' através do script SQL abaixo.
+
+
+CREATE DATABASE logs;
+
+\connect logs;
+
+CREATE SEQUENCE funcionarios_seq;
+
+CREATE TABLE funcionarios
+(
+  codigo INT NOT NULL DEFAULT NEXTVAL('funcionarios_seq'),
+  nome VARCHAR(60) NOT NULL,
+  telefone CHAR(14) NOT NULL,
+  PRIMARY KEY (codigo)
+);
+
+ALTER SEQUENCE funcionarios_seq OWNED BY funcionarios.codigo;
+
+
+CREATE TABLE logs
+(
+  usuario VARCHAR(20) NOT NULL,
+  datahora TIMESTAMP NOT NULL,
+  evento VARCHAR(200) NOT NULL
+); 
+
+
+Definição
+----------------------------------------------------------------------------------------------------
+Uma trigger é um bloco de comandos SQL que é executado quando uma operação for realizada na tabela.
+
+
+Operações
+----------------------------------------------------------------------------------------------------
+- INSERT
+- UPDATE
+- DELETE
+
+
+BEFORE e AFTER
+----------------------------------------------------------------------------------------------------
+Uma trigger pode ser programada para ser executada antes (BEFORE) ou depois (AFTER) de uma das 
+operações possiveis sobre uma tabela.
+
+
+Operadores OLD e NEW
+----------------------------------------------------------------------------------------------------
+Uma trigger disponibiliza os operadores OLD e NEW para que dados alterados possam ser acessados 
+dentro da trigger.
+
+Os operadores OLD e NEW estarão disponíveis conforme o tipo da operação.
+
+INSERT: o operador NEW estará presente e OLD não
+DELETE: o operador OLD estará presente e NEW não
+UPDATE: ambos os operadores OLD e NEW estarão presentes
+
+
+Criando uma trigger
+----------------------------------------------------------------------------------------------------
+CREATE FUNCTION <nome_trigger_funcao>() RETURNS trigger
+AS $$
+BEGIN
+  <comandos>;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER <nome_trigger> BEFORE|AFTER INSERT|UPDATE|DELETE ON <nome_tabela>
+FOR EACH ROW EXECUTE PROCEDURE <nome_trigger_funcao>();
+
+
+Exemplo
+
+  CREATE FUNCTION tgr_funcionarios_insert() RETURNS trigger
+  AS $$
+  DECLARE
+    evento VARCHAR(200);
+  BEGIN
+    evento := CONCAT('Inseriu os dados: ', NEW.nome, ', ', NEW.telefone); 
+
+    INSERT INTO logs VALUES (CURRENT_USER, NOW(), evento);
+
+    RETURN NULL;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  CREATE TRIGGER tgr_funcionarios_insert BEFORE INSERT ON funcionarios
+  FOR EACH ROW EXECUTE PROCEDURE tgr_funcionarios_insert();
+
+  INSERT INTO funcionarios VALUES (1, 'Fulano da Silva', '998887676');
+
+  SELECT * FROM logs;
+
+
+Excluindo uma trigger
+----------------------------------------------------------------------------------------------------
+DROP TRIGGER <nome-trigger> ON <nome-tabela>;
+
+Exemplo
+
+  DROP TRIGGER tgr_funcionarios_insert ON funcionarios;
+
+
+====================================================================================================
+EXERCICIOS
+====================================================================================================
+
+Exercicio - Controle Estoque
+----------------------------------------------------------------------------------------------------
+Criar um banco de dados para controlar o estoque de produtos de um escritório.
+
+Instruções
+
+- Executar o script 'estoque.sql'
+
+- Criar uma trigger para a tabela 'pedidos_itens' para que toda vez que um produto for inserido na 
+  tabela, a quantidade em estoque do produto seja atualizada.
+
+
+====================================================================================================
+RESPOSTAS EXERCICIOS
+====================================================================================================
+
+Exercicio - Controle Estoque
+----------------------------------------------------------------------------------------------------
+- Executar o script 'estoque.sql'
+
+- Criar uma trigger para a tabela 'pedidos_itens' para que toda vez que um produto for inserido na 
+  tabela, a quantidade em estoque do produto seja atualizada.
+
+  ...
+
+
+

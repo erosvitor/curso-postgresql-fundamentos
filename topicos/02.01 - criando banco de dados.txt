@@ -1,0 +1,190 @@
+====================================================================================================
+CURSO POSTGRESQL FUNDAMENTOS - CRIANDO BANDO DE DADOS
+====================================================================================================
+
+
+Banco de dados
+----------------------------------------------------------------------------------------------------
+- Acessar o console do PostgreSQL
+
+  $ su -l postgres
+  $ psql
+
+
+- Listar os bancos de dados existentes
+  
+  postgres=# \list
+
+
+- Criar o banco de dados
+
+  postgres=# create database <nome-banco-de-dados>;
+
+  Exemplo:
+
+    postgres=# create database teste;
+
+
+- Acessar o banco de dados recém criado
+
+  postgres=# \connect <nome-banco-de-dados>
+
+  Exemplo:
+  
+    postgres=# \connect teste
+
+
+- Listar as tabelas do banco de dados
+
+  postgres=# \dt
+
+
+- Excluir um banco de dados
+
+  postgres=# drop database <nome-do-banco-de-dados>;
+  
+  Exemplo
+  
+    postgres=# drop database teste;
+
+  
+- Criar um banco de dados com conjunto de caracteres
+
+  postgres=# CREATE DATABASE <nome-do-banco-de-dados> ENCODING '<character-set>' LC_COLLATE '<collate>';
+
+  Exemplo
+  
+    postgres=# CREATE DATABASE agenda ENCODING 'UTF8' LC_COLLATE 'en_US.UTF-8';
+    postgres=# \connect agenda;
+
+  Character Set vs COLLATE
+    - Um 'character set' é uma seleção de símbolos e codificação.
+    - Uma 'collation' é uma seleção de regras para comparação de caracteres na 
+      seleção de símbolos (character set)
+
+
+- Criando uma tabela
+
+  postgres=# CREATE TABLE <nome-tabela> ( <lista-campos> );
+
+  Exemplo
+
+    CREATE TABLE contatos
+    (
+      codigo INT,
+      nome VARCHAR(60),
+      data_nascimento DATE,
+      telefone VARCHAR(15)
+    );
+
+
+- Adicionar chave primária
+
+  postgres=# ALTER TABLE <nome-tabela> ADD PRIMARY KEY (<nome-campo>);
+
+  Exemplo
+
+    postgres=# ALTER TABLE contatos ADD PRIMARY KEY (codigo); 
+
+
+- Remover chave primária
+
+  postgres=# ALTER TABLE <nome-tabela> DROP CONSTRAINT <nome-chave-primaria>;
+
+  Exemplo
+
+    postgres=# ALTER TABLE contatos DROP CONSTRAINT contatos_pkey;
+
+
+- Nomear chave primária
+
+  postgres=# ALTER TABLE <nome-tabela> ADD CONSTRAINT <nome-chave-primaria> PRIMARY KEY (<nome-campo>);
+
+  Exemplo
+
+    postgres=# ALTER TABLE contatos ADD CONSTRAINT pk_codigo PRIMARY KEY (codigo);
+
+
+- Excluir um tabela
+
+  postgres=# DROP TABLE <nome-tabela>;
+
+  Exemplo
+
+    postgres=# DROP TABLE contatos;
+
+
+- Adicionar restrições
+
+  Tipos de restrições:
+    - Não nulos
+    - Valores limitados
+
+  CREATE TABLE contatos (
+    codigo INT NOT NULL,
+    nome VARCHAR(60) NOT NULL,
+    data_nascimento DATE NOT NULL,
+    telefone VARCHAR(15) NOT NULL,
+    PRIMARY KEY (codigo)
+  );
+
+
+- Criando banco de dados através de script SQL
+
+  postgres# \i <caminho-do-arquivo>/<nome-do-arquivo.sql>;
+
+  Exemplo:
+
+    postgres# \i /path/controleacesso-postgres.sql;
+
+
+====================================================================================================
+EXERCÍCIOS
+====================================================================================================
+
+Exercício 01 – Banco de dados Alunos
+----------------------------------------------------------------------------------------------------
+Criar um banco de dados para armazenar dados de alunos.
+
+Instruções:
+
+- Criar um banco de dados chamado 'alunos'
+- Criar uma tabela chamada 'alunos' contendo os seguintes campos: codigo, nome, cpf e genero
+- O campo 'codigo' deve ser numérico, sequencial e automático
+- A chave primária da tabela deve ser o campo 'codigo'
+- O campo 'nome' deve armazenar até 80 caracteres
+- O tamanho do campo 'cpf' deve ser 11
+- No campo 'sexo' será armazenado as letras 'F' ou 'M'
+- Todos os campos devem ser obrigatórios
+
+
+Exercício 02 – CHAR e VARCHAR
+----------------------------------------------------------------------------------------------------
+Qual a diferença entre os tipos CHAR e VARCHAR?
+
+
+====================================================================================================
+RESPOSTAS EXERCÍCIOS
+====================================================================================================
+
+Exercício 01 – Banco de dados Alunos
+----------------------------------------------------------------------------------------------------
+CREATE DATABASE alunos;
+\connect alunos;
+CREATE SEQUENCE alunos_seq;
+CREATE TABLE alunos
+(
+  codigo INT NOT NULL DEFAULT NEXTVAL('alunos_seq'),
+  nome VARCHAR(80) NOT NULL,
+  cpf CHAR(11) NOT NULL,
+  sexo CHAR(1) NOT NULL,
+  PRIMARY KEY (codigo)
+);
+ALTER SEQUENCE alunos_seq OWNED BY alunos.codigo;
+
+
+Exercício 02 – CHAR e VARCHAR
+----------------------------------------------------------------------------------------------------
+O CHAR sempre ocupará a quantidade de caracteres definida e o VARCHAR ocupará a quantidade conforme
+a conteúdo armazenado.
+

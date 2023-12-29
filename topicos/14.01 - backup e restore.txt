@@ -1,0 +1,39 @@
+
+====================================================================================================
+CURSO POSTGRESQL FUNDAMENTOS - BACKUP E RESTORE
+====================================================================================================
+
+
+Criando backup
+----------------------------------------------------------------------------------------------------
+$ pg_dump -Fc <nome-banco-de-dados> > <nome-backup>
+
+Exemplo:
+  pg_dump -Fc agenda > /home/eros/agenda-postgres.dump
+
+
+Restaurando backup
+----------------------------------------------------------------------------------------------------
+$ createdb <nome-banco-de-dados>
+$ pg_restore -d <nome-banco-de-dados> <nome-backup>
+
+Exemplo:
+  $ createdb agenda
+  $ pg_restore -d agenda /home/eros/agenda-postgres.dump
+
+
+Exportando apenas o schema
+----------------------------------------------------------------------------------------------------
+$ pg_dump --schema-only <nome-banco-de-dados> > <nome-aquivo>.sql 
+
+Exemplo:
+  pg_dump --schema-only agenda > /home/eros/agenda-postgres.schema
+
+
+Exportando apenas os dados
+----------------------------------------------------------------------------------------------------
+$ pg_dump --data-only --column-inserts <nome-banco-de-dados> > <nome-aquivo>
+
+Exemplo:
+  pg_dump --data-only --column-inserts agenda > /home/eros/agenda-postgres.data
+

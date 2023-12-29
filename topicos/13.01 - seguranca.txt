@@ -1,0 +1,67 @@
+====================================================================================================
+CURSO POSTGRESQL FUNDAMENTOS - SEGURANÇA
+====================================================================================================
+
+
+Listando todos os usuários
+----------------------------------------------------------------------------------------------------
+postgres=# select usename from pg_user;
+
+
+Criando um usuário
+----------------------------------------------------------------------------------------------------
+postgres=# create user <nome-usuario> with password '<senha-usuario>';
+postgres=# create user <nome-usuario> with password '<senha-usuario>' valid until '<yyyy-mm-dd>';
+
+exemplo:
+
+  postgres=# create user superuser with password 'superuser';
+
+
+Obtendo permissões do usuários
+----------------------------------------------------------------------------------------------------
+postgres=# \du
+
+or
+
+postgres=# select grantor, grantee, privilege_type from information_schema.table_privileges where grantee = '<nome-usuario>';
+
+exemplo:
+
+  postgres=# select grantor, grantee, privilege_type from information_schema.table_privileges where grantee = 'superuser';
+
+
+Concedendo permissões
+----------------------------------------------------------------------------------------------------
+postgres=# grant all privileges on database <nome-banco-de-dados> to <nome-usuario>;
+
+exemplo:
+
+  postgres=# grant all privileges on database agenda to superuser;
+
+
+
+Concedendo permissão apenas leitura
+----------------------------------------------------------------------------------------------------
+postgres=# grant select on all tables in schema public to <nome-usuario>;
+
+exemplo:
+
+  postgres=# create user user01 with password 'user01';
+  postgres=# grant select on all tables in schema public to user01;
+
+more details:
+
+  https://www.postgresql.org/docs/9.0/static/sql-grant.html
+
+
+Removendo permissões
+----------------------------------------------------------------------------------------------------
+postgres=#revoke <permission> ON <nome-banco-de-dados> from <nome-usuario>;
+
+
+Excluindo usuário
+----------------------------------------------------------------------------------------------------
+postgres=# drop user <nome-usuario>;
+
+

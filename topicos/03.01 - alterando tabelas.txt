@@ -1,0 +1,95 @@
+====================================================================================================
+CURSO POSTGRESQL FUNDAMENTOS - ALTERANDO TABELAS
+====================================================================================================
+
+
+Banco de dados exemplo
+----------------------------------------------------------------------------------------------------
+Para este tópico será utilizado o banco de dados AGENDA (criado no tópico 02.01)
+
+
+- Adicionar novo campo
+
+  postgres=# ALTER TABLE <nome-tabela> ADD COLUMN <campo>;
+  
+  Exemplo
+  
+    postgres=# ALTER TABLE contatos ADD COLUMN cpf CHAR(14);
+
+
+- Alterar um determinado campo
+
+  postgres=# ALTER TABLE <nome-tabela> ALTER COLUMN <nome-campo> TYPE <novo-tipo-dado>;
+  postgres=# ALTER TABLE <nome-tabela> RENAME COLUMN <nome-campo-atual> TO <novo-nome>;
+
+  Exemplo
+
+    postgres=# ALTER TABLE contatos ALTER COLUMN cpf TYPE CHAR(11); 
+
+
+- Remover um determinado campo
+
+  postgres=# ALTER TABLE <nome-tabela> DROP COLUMN <nome-campo>;
+
+  Exemplo
+
+    postgres=# ALTER TABLE contatos DROP COLUMN cpf; 
+
+
+- Alterar o nome da tabela
+
+  postgres=# ALTER TABLE <nome-tabela> RENAME TO <novo-nome-tabela>;
+  
+  Exemplo
+
+    postgres=# ALTER TABLE contatos RENAME TO pessoas;
+
+
+====================================================================================================
+EXERCÍCIOS
+====================================================================================================
+
+Exercício 01 – Alterações no banco de dados Alunos (criado na aula 02.01)
+----------------------------------------------------------------------------------------------------
+Alterar a estrutura da tabela 'alunos' conforme as instruções abaixo.
+
+CREATE TABLE alunos
+(
+  codigo INT NOT NULL AUTO_INCREMENT,
+  nome VARCHAR(80) NOT NULL,
+  cpf CHAR(11) NOT NULL,
+  sexo CHAR(1) NOT NULL,
+  PRIMARY KEY (codigo)
+);
+
+Instruções:
+
+- O campo 'cpf' deve aceitar 14 caracteres e não apenas 11 caracteres
+- Alterar o nome do campo 'sexo' para 'genero'
+- Adicionar o campo 'rg'
+- Adicionar o campo 'uf' para armazenar a sigla do estado federativo
+- O campo 'genero' não pode ser obrigatório
+
+
+Exercício 02 – Nome do banco de dados
+----------------------------------------------------------------------------------------------------
+È possível alterar o nome do banco de dados?
+
+
+====================================================================================================
+RESPOSTAS EXERCÍCIOS
+====================================================================================================
+
+Exercício 01 – Alterações no banco de dados Alunos
+----------------------------------------------------------------------------------------------------
+ALTER TABLE alunos ALTER COLUMN cpf TYPE CHAR(14);
+ALTER TABLE alunos RENAME COLUMN sexo TO genero;
+ALTER TABLE alunos ADD COLUMN rg CHAR(11) NOT NULL;
+ALTER TABLE alunos ADD COLUMN uf CHAR(2) NOT NULL;
+ALTER TABLE alunos ALTER COLUMN genero DROP NOT NULL;
+
+
+Exercício 02 – Nome do banco de dados
+----------------------------------------------------------------------------------------------------
+Sim, basta usar o comando ALTER DATABASE <nome-banco-de-dados> RENAME TO <novo-nome>;
+

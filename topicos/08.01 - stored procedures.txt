@@ -1,0 +1,365 @@
+====================================================================================================
+CURSO POSTGRESQL FUNDAMENTOS - STORED PROCEDURES
+====================================================================================================
+
+
+Banco de dados exemplo
+----------------------------------------------------------------------------------------------------
+Para este tópico criar um banco de dados chamado 'storedprocedures'.
+
+
+Definição
+----------------------------------------------------------------------------------------------------
+Uma stored procedure é um bloco contendo uma ou mais instruções SQL que fica armazenado dentro do 
+banco de dados e é utilizado para a execução de uma determinada tarefa.
+
+
+Benefícios
+----------------------------------------------------------------------------------------------------
+- Centralização
+- Segurança
+- Velocidade
+
+
+Sintaxe
+----------------------------------------------------------------------------------------------------
+CREATE FUNCTION <nome-procedure>([parametros]) RETURNS <type>
+AS $$
+BEGIN
+  <instruções SQL>
+END;
+$$ LANGUAGE plpgsql;
+  
+Exemplo
+
+  CREATE FUNCTION sp_dataatual() RETURNS void 
+  AS $$
+  BEGIN
+    RAISE NOTICE '%s', now();
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+Executando
+----------------------------------------------------------------------------------------------------
+SELECT <nome-procedure>;
+
+Exemplo
+
+  SELECT sp_dataatual();
+  
+ 
+Excluindo procedure
+----------------------------------------------------------------------------------------------------
+DROP FUNCTION <nome-procedure>([parametros]);
+
+Exemplo
+
+  DROP FUNCTION sp_dataatual();
+
+
+Stored procedure com parâmetros
+----------------------------------------------------------------------------------------------------
+CREATE FUNCTION <nome-procedure>(<nome-param tipo-dado>) RETURNS <tipo>
+AS $$
+BEGIN
+  <instruções SQL>
+END;
+$$ LANGUAGE plpgsql;
+  
+Exemplo
+
+  CREATE FUNCTION sp_boasvindas(param VARCHAR(30)) RETURNS void
+  AS $$
+  BEGIN
+    RAISE NOTICE 'Seja bem vindo %!!!', param;
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+Executando stored procedure que recebe parâmetro
+----------------------------------------------------------------------------------------------------
+SELECT <nome-procedure(<parâmetro>);
+
+Exemplo
+
+  SELECT sp_boasvindas("Fulano da Silva");
+
+
+Stored Procedure retornando valor
+----------------------------------------------------------------------------------------------------
+CREATE FUNCTION <nome-procedure>(OUT <nome-retorno tipo-dado>)
+AS $$
+BEGIN
+  <nome-retorno> := <conteudo>;
+END;
+$$ LANGUAGE plpgsql;
+
+Exemplo
+
+  CREATE FUNCTION sp_valorPI(OUT resultado DECIMAL(6,4))
+  AS $$
+  BEGIN
+    resultado := 3.1415;
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+Executando Stored Procedure Retornando Valor
+
+  SELECT sp_valorPI();
+
+
+Stored Procedure com parametro e retorno
+----------------------------------------------------------------------------------------------------
+CREATE FUNCTION <nome-procedure>(<nome-param tipo-dado>, ..., OUT <nome-retorno tipo-dado>)
+AS $$
+BEGIN
+  <instrução SQL> INTO <nome-retorno>;
+END;
+$$ LANGUAGE plpgsql;
+
+Exemplo
+
+  CREATE FUNCTION sp_areacirculo(raio DECIMAL(8,2), OUT area DECIMAL(8,2))
+  AS $$
+  BEGIN
+    area := 3.1415 * (raio*raio);
+  END;
+  $$ LANGUAGE plpgsql;
+
+  
+  SELECT sp_areacirculo(5.20);
+
+
+Variáveis em stored procedures
+----------------------------------------------------------------------------------------------------
+DECLARE <nome-variável> <tipo-dado>;
+<nome-variável> := <valor>;
+
+Exemplo
+
+  CREATE FUNCTION sp_variaveis() RETURNS INT
+  AS $$
+  DECLARE
+    numero INT; 
+  BEGIN
+    numero := 100;
+    RETURN numero;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  
+  SELECT sp_variaveis();
+
+
+Estruturas decisão em stored procedures
+----------------------------------------------------------------------------------------------------
+IF <condicao> THEN
+  <comandos>;
+ELSE
+  <comandos>;
+END IF;
+
+Exemplo
+
+  CREATE FUNCTION sp_idade(idade INT) RETURNS VARCHAR(20)
+  AS $$
+  DECLARE
+    resultado VARCHAR(20);
+  BEGIN
+    IF idade >= 18 THEN
+      resultado := 'Maior de idade';
+    ELSE
+      resultado := 'Menor de idade';
+    END IF;
+    RETURN resultado;
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+CASE <expression>
+  WHEN <value_1> THEN
+    <comandos>;
+  WHEN <value_2> THEN
+    <comandos>;
+  ELSE
+    <comandos>
+END CASE;  
+
+Exemplo
+
+  CREATE FUNCTION sp_diasemana(dia_semana INT) RETURNS CHAR(15)
+  AS $$
+  DECLARE
+    nome_dia CHAR(15);
+  BEGIN
+    CASE dia_semana
+      WHEN 1 THEN
+        nome_dia := 'domingo'; 
+      WHEN 2 THEN
+        nome_dia := 'segunda'; 
+      WHEN 3 THEN
+        nome_dia := 'terça'; 
+      WHEN 4 THEN
+        nome_dia := 'quarta'; 
+      WHEN 5 THEN
+        nome_dia := 'quinta'; 
+      WHEN 6 THEN
+        nome_dia := 'sexta'; 
+      WHEN 7 THEN
+        nome_dia := 'sábado';
+      ELSE
+        nome_dia := 'dia inválido'; 
+    END CASE;
+    RETURN nome_dia;
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+Estruturas repetição em stored procedures
+----------------------------------------------------------------------------------------------------
+WHILE <condicao> LOOP
+  <comandos>
+END LOOP;
+
+Exemplo
+
+  CREATE FUNCTION sp_while(quantidade INT) RETURNS void
+  AS $$
+  DECLARE
+    inicio INT;
+    str VARCHAR(200);
+  BEGIN
+    inicio := 1;
+    str := '';
+
+    WHILE inicio < quantidade LOOP
+      str := CONCAT(str, inicio, ',');
+      inicio := inicio + 1;
+    END LOOP;
+
+    RAISE NOTICE '%', str;
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+====================================================================================================
+EXERCICIOS
+====================================================================================================
+
+Exercício 01 - Controle Bancário
+----------------------------------------------------------------------------------------------------
+Criar um banco de dados contendo stored procedures para um controle bancário.
+
+Instruções:
+
+- Criar um banco de dados chamado 'controlebancario'
+
+- Criar uma tabela chamada 'contas' contendo os seguintes campos:
+
+  banco, agencia, conta, saldo
+
+- Criar uma stored procedure que receba os dados da conta como parâmetros e depois insira na tabela 
+  'contas' criando assim uma nova conta bancária.
+
+- Criar uma stored procedure para realizar a operação de depósito.
+
+- Criar uma stored procedure para realizar a operação de saque.
+
+- Criar uma stored procedure para realizar a operação de transferência.
+
+
+====================================================================================================
+RESPOSTAS EXERCICIOS
+====================================================================================================
+
+Exercício 01 - Controle Bancário
+----------------------------------------------------------------------------------------------------
+
+- Criar um banco de dados chamado 'controlebancario'
+
+  CREATE DATABASE controlebancario;
+
+  \connect controlebancario;
+
+
+- Criar uma tabela chamada 'contas' contendo os seguintes campos:
+
+  banco, agencia, conta, saldo
+
+  CREATE SEQUENCE contas_seq;
+
+  CREATE TABLE contas
+  (
+    codigo INT NOT NULL DEFAULT NEXTVAL('contas_seq'),
+    banco VARCHAR(40) NOT NULL,
+    agencia CHAR(10) NOT NULL,
+    numero CHAR(10) NOT NULL,
+    saldo NUMERIC(14,2) NOT NULL,
+    PRIMARY KEY (codigo)
+  );
+
+  ALTER SEQUENCE contas_seq OWNED BY contas.codigo;
+
+
+- Criar uma stored procedure que receba os dados da conta como parâmetros e
+  depois insira na tabela 'contas' criando assim uma nova conta bancária.
+
+  CREATE FUNCTION sp_abrir_conta(banco VARCHAR(40), agencia CHAR(10), numero CHAR(10), saldo NUMERIC(14,2)) RETURNS void
+  AS $$
+  BEGIN
+    INSERT INTO contas (banco, agencia, numero, saldo)
+    VALUES (banco, agencia, numero, saldo);
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+- Criar uma stored procedure para realizar a operação de depósito.
+
+  CREATE FUNCTION sp_depositar(conta CHAR(10), valor NUMERIC(14,2)) RETURNS void
+  AS $$
+  BEGIN
+    UPDATE contas SET saldo = saldo + valor WHERE numero = conta;
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+- Criar uma stored procedure para realizar a operação de saque.
+
+  CREATE FUNCTION sp_sacar(conta CHAR(10), valor NUMERIC(14,2), OUT resultado VARCHAR(60))
+  AS $$
+  DECLARE
+    saldo_atual NUMERIC(14,2);
+  BEGIN
+    SELECT saldo INTO saldo_atual FROM contas WHERE numero = conta;
+
+    IF saldo_atual >= valor THEN
+      UPDATE contas SET saldo = saldo - valor WHERE numero = conta;
+      resultado := 'Saque realizado com sucesso!';
+    ELSE
+      resultado := 'Saque não realizado. Saldo insuficiente!';
+    END IF;
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+- Criar uma stored procedure para realizar a operação de transferência.
+
+  CREATE FUNCTION sp_transferir(conta_origem CHAR(10), conta_destino CHAR(10), valor NUMERIC(14,2), OUT resultado VARCHAR(60))
+  AS $$
+  DECLARE
+    saldo_atual NUMERIC(14,2);
+  BEGIN
+    SELECT saldo INTO saldo_atual FROM contas WHERE numero = conta_origem;
+  
+    IF saldo_atual >= valor THEN
+      UPDATE contas SET saldo = saldo - valor WHERE numero = conta_origem;
+      UPDATE contas SET saldo = saldo + valor WHERE numero = conta_destino;
+      resultado := 'Transferencia realizada';
+    ELSE
+      resultado := 'Transferencia não realizada. Saldo insuficiente';
+    END IF;
+  END;
+  $$ LANGUAGE plpgsql;
+

@@ -1,0 +1,109 @@
+====================================================================================================
+CURSO POSTGRESQL FUNDAMENTOS - TRANSAÇÕES
+====================================================================================================
+
+
+Banco de dados exemplo
+----------------------------------------------------------------------------------------------------
+Para este tópico será utilizado o banco de dados 'controlebancario'.
+
+
+Descrição
+----------------------------------------------------------------------------------------------------
+Uma transação é uma operação que garante a execução completa ou o cancelamento completo de um 
+conjunto de instruções SQL.
+
+
+ACID
+----------------------------------------------------------------------------------------------------
+A palavra ACID é a junção das primeiras letras das palavras Atomicidade, Consistência, Isolamento e 
+Durabilidade.
+
+Atomicidade: significa que todas as instruções, juntas e de forma única, devem ser executadas por 
+completo ou devem ser canceladas por completo.
+
+Consistência: significa que os dados devem estar sempre consistente entre as tabelas, ou seja, um 
+relacionamento entre duas tabelas não pode ser quebrado devido a falta ou perda de parte dos dados.
+
+Isolamento: significa que os dados usados na transação não podem sofrer alterações por outra 
+transação.
+
+Durabilidade: significa que as alterações efetuadas pela transação não serão perdidas após o término
+da transação.
+
+
+AUTOCOMMIT
+----------------------------------------------------------------------------------------------------
+O 'autocommit' é uma variável global do PostgreSQL que, por padrão, define que todos os comandos SQL 
+serão efetivados automaticamente após a sua execução.
+
+Para visualizar o conteudo da variável 'autocommit', utilizar o comando abaixo.
+
+  \echo :AUTOCOMMIT
+
+Para alterar o valor da variável 'AUTOCOMMIT', utilizar o comando abaixo.
+
+  \set AUTOCOMMINT on|off
+
+  Obs: If it's desired to "always" have autocommit disabled, the \set AUTOCOMMIT off meta-command 
+       can be added to one's local ~/.psqlrc file. For an even more global setting, this meta-command
+       can be placed in apsqlrc file in the database's system config directory (which can be located 
+       using PostgreSQL operating system-level command pg_config --sysconfdir).
+
+
+Comandos para controle de transação
+----------------------------------------------------------------------------------------------------
+- BEGIN
+- COMMIT
+- ROLLBACK
+- SAVEPOINT <nome>
+- ROLLBACK TO <nome>
+
+
+Comandos BEGIN e COMMIT
+----------------------------------------------------------------------------------------------------
+O comando 'begin' inicia uma transação e o comando 'commit' finaliza a transação, garantindo que 
+todos os comandos sejam efetivados.
+
+Exemplo
+
+  BEGIN;
+
+  INSERT INTO <nome-tabela1> ...
+  UPDATE <nome-tabela2> ...
+
+  COMMIT;
+
+
+Comando ROLLBACK
+----------------------------------------------------------------------------------------------------
+O comando 'rollback' desfaz as alterações efetuadas pelos comandos.
+
+Exemplo
+ 
+  BEGIN;
+
+  INSERT INTO ...;
+    
+  SELECT ...;
+    
+  INSERT INTO ...;
+    
+  ROLLBACK;
+
+
+Comandos SAVEPOINT e ROLLBACK TO
+----------------------------------------------------------------------------------------------------
+O comando 'savepoint' define um ponto para que o comando 'rollback to' possa desfazer as alterações 
+até o ponto definido pelo 'savepoint'.
+
+Exemplo
+
+  BEGIN;
+  comandos SQL...
+  SAVEPOINT <nome-ponto>;
+  comandos SQL...
+  ROLLBACK TO <nome-ponto>;
+  comandos SQL...
+  COMMIT;
+
